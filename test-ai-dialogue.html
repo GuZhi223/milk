@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI对话系统测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .test-item {
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+        .test-item.success {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        .test-item.error {
+            border-color: #f44336;
+            background: #fff8f8;
+        }
+        .test-item.pending {
+            border-color: #FF9800;
+            background: #fff8f0;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            background: #FF6B6B;
+            color: white;
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        .result-area {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .status.pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI对话系统集成测试</h1>
+    
+    <div class="test-container">
+        <div class="test-title">模块加载测试</div>
+        <div id="module-tests">
+            <div class="test-item pending" id="test-persona-manager">
+                <span>PersonaManager</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-memory-manager">
+                <span>MemoryManager</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-conversation-intake">
+                <span>ConversationIntake</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-ai-analyzer">
+                <span>AIAnalyzer</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-skill-builder">
+                <span>SkillBuilder</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-ai-dialogue-manager">
+                <span>AIDialogueManager</span>
+                <span class="status pending">待测试</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-title">功能测试</div>
+        <button class="btn btn-primary" onclick="testAll()">运行所有测试</button>
+        <button class="btn btn-secondary" onclick="clearResults()">清除结果</button>
+        
+        <div id="test-results">
+            <div class="test-item pending" id="test-create-persona">
+                <span>创建人格数据</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-create-memory">
+                <span>创建记忆数据</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-create-skill">
+                <span>创建Skill</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-generate-prompt">
+                <span>生成系统提示词</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-intake-flow">
+                <span>对话式信息录入</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-persona-tags">
+                <span>人格标签功能</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-correction-mechanism">
+                <span>对话纠正机制</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-incremental-memory">
+                <span>增量记忆追加</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-prompt-generation">
+                <span>提示词生成</span>
+                <span class="status pending">待测试</span>
+            </div>
+            <div class="test-item pending" id="test-import-ex-skill">
+                <span>导入Ex-Skill</span>
+                <span class="status pending">待测试</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-title">测试结果</div>
+        <div class="result-area" id="result-output">点击"运行所有测试"开始测试...</div>
+    </div>
+
+    <!-- 加载所有模块 -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/backup-engine.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/ai-service.js"></script>
+    <script src="js/persona-manager.js"></script>
+    <script src="js/memory-manager.js"></script>
+    <script src="js/conversation-intake.js"></script>
+    <script src="js/ai-analyzer.js"></script>
+    <script src="js/skill-builder.js"></script>
+    <script src="js/features.js"></script>
+
+    <script>
+        // 测试结果收集
+        var testResults = [];
+        
+        // 更新测试状态
+        function updateTestStatus(testId, status, message) {
+            var element = document.getElementById(testId);
+            if (element) {
+                element.className = 'test-item ' + status;
+                var statusSpan = element.querySelector('.status');
+                if (statusSpan) {
+                    statusSpan.className = 'status ' + status;
+                    statusSpan.textContent = status === 'success' ? '通过' : status === 'error' ? '失败' : '待测试';
+                }
+            }
+            
+            // 记录结果
+            testResults.push({
+                test: testId,
+                status: status,
+                message: message,
+                timestamp: new Date().toISOString()
+            });
+            
+            // 更新结果输出
+            updateResultOutput();
+        }
+        
+        // 更新结果输出
+        function updateResultOutput() {
+            var output = document.getElementById('result-output');
+            if (output) {
+                var text = '测试结果:\n';
+                testResults.forEach(function(result) {
+                    var statusIcon = result.status === 'success' ? '✓' : result.status === 'error' ? '✗' : '○';
+                    text += statusIcon + ' ' + result.test + ': ' + (result.message || result.status) + '\n';
+                });
+                output.textContent = text;
+            }
+        }
+        
+        // 测试模块加载
+        function testModuleLoading() {
+            log('开始测试模块加载...');
+            
+            // 测试PersonaManager
+            if (typeof PersonaManager !== 'undefined') {
+                updateTestStatus('test-persona-manager', 'success', 'PersonaManager已加载');
+                log('✓ PersonaManager已加载');
+            } else {
+                updateTestStatus('test-persona-manager', 'error', 'PersonaManager未加载');
+                log('✗ PersonaManager未加载');
+            }
+            
+            // 测试MemoryManager
+            if (typeof MemoryManager !== 'undefined') {
+                updateTestStatus('test-memory-manager', 'success', 'MemoryManager已加载');
+                log('✓ MemoryManager已加载');
+            } else {
+                updateTestStatus('test-memory-manager', 'error', 'MemoryManager未加载');
+                log('✗ MemoryManager未加载');
+            }
+            
+            // 测试ConversationIntake
+            if (typeof ConversationIntake !== 'undefined') {
+                updateTestStatus('test-conversation-intake', 'success', 'ConversationIntake已加载');
+                log('✓ ConversationIntake已加载');
+            } else {
+                updateTestStatus('test-conversation-intake', 'error', 'ConversationIntake未加载');
+                log('✗ ConversationIntake未加载');
+            }
+            
+            // 测试AIAnalyzer
+            if (typeof AIAnalyzer !== 'undefined') {
+                updateTestStatus('test-ai-analyzer', 'success', 'AIAnalyzer已加载');
+                log('✓ AIAnalyzer已加载');
+            } else {
+                updateTestStatus('test-ai-analyzer', 'error', 'AIAnalyzer未加载');
+                log('✗ AIAnalyzer未加载');
+            }
+            
+            // 测试SkillBuilder
+            if (typeof SkillBuilder !== 'undefined') {
+                updateTestStatus('test-skill-builder', 'success', 'SkillBuilder已加载');
+                log('✓ SkillBuilder已加载');
+            } else {
+                updateTestStatus('test-skill-builder', 'error', 'SkillBuilder未加载');
+                log('✗ SkillBuilder未加载');
+            }
+            
+            // 测试AIDialogueManager
+            if (typeof AIDialogueManager !== 'undefined') {
+                updateTestStatus('test-ai-dialogue-manager', 'success', 'AIDialogueManager已加载');
+                log('✓ AIDialogueManager已加载');
+            } else {
+                updateTestStatus('test-ai-dialogue-manager', 'error', 'AIDialogueManager未加载');
+                log('✗ AIDialogueManager未加载');
+            }
+        }
+        
+        // 测试创建人格数据
+        function testCreatePersona() {
+            log('测试创建人格数据...');
+            
+            try {
+                var persona = PersonaManager.create('测试用户', {
+                    identity: {
+                        name: '测试用户',
+                        age: '25',
+                        occupation: '程序员'
+                    },
+                    speaking_style: {
+                        language_habits: ['说话温柔', '喜欢用表情'],
+                        common_phrases: ['嗯嗯', '好的']
+                    }
+                });
+                
+                if (persona && persona.identity.name === '测试用户') {
+                    updateTestStatus('test-create-persona', 'success', '人格数据创建成功');
+                    log('✓ 人格数据创建成功');
+                    return true;
+                } else {
+                    updateTestStatus('test-create-persona', 'error', '人格数据创建失败');
+                    log('✗ 人格数据创建失败');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-create-persona', 'error', '创建人格数据时出错: ' + e.message);
+                log('✗ 创建人格数据时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试创建记忆数据
+        function testCreateMemory() {
+            log('测试创建记忆数据...');
+            
+            try {
+                var memory = MemoryManager.create('测试用户', {
+                    timeline: {
+                        first_met: '2022-01-01',
+                        relationship_start: '2022-06-01'
+                    },
+                    shared_experiences: {
+                        places_visited: ['北京', '上海'],
+                        inside_jokes: ['测试笑话']
+                    }
+                });
+                
+                if (memory && memory.timeline.first_met === '2022-01-01') {
+                    updateTestStatus('test-create-memory', 'success', '记忆数据创建成功');
+                    log('✓ 记忆数据创建成功');
+                    return true;
+                } else {
+                    updateTestStatus('test-create-memory', 'error', '记忆数据创建失败');
+                    log('✗ 记忆数据创建失败');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-create-memory', 'error', '创建记忆数据时出错: ' + e.message);
+                log('✗ 创建记忆数据时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试创建Skill
+        function testCreateSkill() {
+            log('测试创建Skill...');
+            
+            try {
+                var persona = PersonaManager.get('测试用户');
+                var memory = MemoryManager.get('测试用户');
+                
+                var skill = SkillBuilder.create('测试用户', persona, memory, {
+                    response_length: 'medium',
+                    emotional_depth: 'high'
+                });
+                
+                if (skill && skill.name === '测试用户') {
+                    updateTestStatus('test-create-skill', 'success', 'Skill创建成功');
+                    log('✓ Skill创建成功');
+                    return true;
+                } else {
+                    updateTestStatus('test-create-skill', 'error', 'Skill创建失败');
+                    log('✗ Skill创建失败');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-create-skill', 'error', '创建Skill时出错: ' + e.message);
+                log('✗ 创建Skill时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试生成系统提示词
+        function testGeneratePrompt() {
+            log('测试生成系统提示词...');
+            
+            try {
+                var prompt = SkillBuilder.generateSystemPrompt('测试用户', '我');
+                
+                if (prompt && prompt.length > 0 && prompt.includes('测试用户')) {
+                    updateTestStatus('test-generate-prompt', 'success', '系统提示词生成成功');
+                    log('✓ 系统提示词生成成功');
+                    log('提示词预览: ' + prompt.substring(0, 100) + '...');
+                    return true;
+                } else {
+                    updateTestStatus('test-generate-prompt', 'error', '系统提示词生成失败');
+                    log('✗ 系统提示词生成失败');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-generate-prompt', 'error', '生成系统提示词时出错: ' + e.message);
+                log('✗ 生成系统提示词时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试对话式信息录入
+        function testIntakeFlow() {
+            log('测试对话式信息录入...');
+            
+            try {
+                if (typeof ConversationIntake !== 'undefined') {
+                    updateTestStatus('test-intake-flow', 'success', '对话式信息录入模块可用');
+                    log('✓ 对话式信息录入模块可用');
+                    return true;
+                } else {
+                    updateTestStatus('test-intake-flow', 'error', '对话式信息录入模块不可用');
+                    log('✗ 对话式信息录入模块不可用');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-intake-flow', 'error', '测试对话式信息录入时出错: ' + e.message);
+                log('✗ 测试对话式信息录入时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试人格标签功能
+        function testPersonaTags() {
+            log('测试人格标签功能...');
+            
+            try {
+                // 测试标签常量是否可用
+                if (typeof PersonaManager.LOVE_LANGUAGES === 'undefined' ||
+                    typeof PersonaManager.ZODIAC_SIGNS === 'undefined' ||
+                    typeof PersonaManager.MBTI_TYPES === 'undefined' ||
+                    typeof PersonaManager.PERSONALITY_TAGS === 'undefined') {
+                    updateTestStatus('test-persona-tags', 'error', '标签常量未定义');
+                    log('✗ 标签常量未定义');
+                    return false;
+                }
+                
+                // 创建带标签的人格数据
+                var persona = PersonaManager.create('标签测试用户', {
+                    identity: { name: '标签测试用户' },
+                    persona_tags: {
+                        love_languages: ['words_of_affirmation', 'quality_time'],
+                        zodiac: 'leo',
+                        mbti: 'ENFP',
+                        personality_tags: ['romantic', 'optimistic']
+                    }
+                });
+                
+                // 验证标签数据是否正确保存
+                if (persona.persona_tags &&
+                    persona.persona_tags.love_languages.length === 2 &&
+                    persona.persona_tags.zodiac === 'leo' &&
+                    persona.persona_tags.mbti === 'ENFP' &&
+                    persona.persona_tags.personality_tags.length === 2) {
+                    
+                    // 测试生成系统提示词是否包含标签信息
+                    var prompt = PersonaManager.generateSystemPrompt('标签测试用户', '我');
+                    if (prompt && prompt.includes('爱的语言') && prompt.includes('狮子座')) {
+                        updateTestStatus('test-persona-tags', 'success', '人格标签功能正常');
+                        log('✓ 人格标签功能正常');
+                        return true;
+                    } else {
+                        updateTestStatus('test-persona-tags', 'error', '系统提示词未包含标签信息');
+                        log('✗ 系统提示词未包含标签信息');
+                        return false;
+                    }
+                } else {
+                    updateTestStatus('test-persona-tags', 'error', '标签数据保存失败');
+                    log('✗ 标签数据保存失败');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-persona-tags', 'error', '测试人格标签时出错: ' + e.message);
+                log('✗ 测试人格标签时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试对话纠正机制
+        function testCorrectionMechanism() {
+            log('测试对话纠正机制...');
+            
+            try {
+                // 测试纠正函数是否可用
+                if (typeof SkillBuilder.addCorrection !== 'function' ||
+                    typeof SkillBuilder.getCorrections !== 'function' ||
+                    typeof SkillBuilder.clearCorrections !== 'function') {
+                    updateTestStatus('test-correction-mechanism', 'error', '纠正函数未定义');
+                    log('✗ 纠正函数未定义');
+                    return false;
+                }
+                
+                // 创建测试Skill
+                var persona = PersonaManager.get('测试用户');
+                var memory = MemoryManager.get('测试用户');
+                var skill = SkillBuilder.create('纠正测试用户', persona, memory);
+                
+                // 添加纠正记录
+                var correctionResult = SkillBuilder.addCorrection('纠正测试用户', {
+                    context: '今天天气怎么样？',
+                    original_response: '今天天气很好，阳光明媚。',
+                    corrected_response: '今天天气一般般，有点阴。',
+                    reason: '说话风格更消极'
+                });
+                
+                if (!correctionResult) {
+                    updateTestStatus('test-correction-mechanism', 'error', '添加纠正记录失败');
+                    log('✗ 添加纠正记录失败');
+                    return false;
+                }
+                
+                // 获取纠正记录
+                var corrections = SkillBuilder.getCorrections('纠正测试用户');
+                if (corrections.length !== 1 || corrections[0].context !== '今天天气怎么样？') {
+                    updateTestStatus('test-correction-mechanism', 'error', '获取纠正记录失败');
+                    log('✗ 获取纠正记录失败');
+                    return false;
+                }
+                
+                // 测试系统提示词是否包含纠正信息
+                var prompt = SkillBuilder.generateSystemPrompt('纠正测试用户', '我');
+                if (prompt && prompt.includes('重要纠正') && prompt.includes('今天天气一般般')) {
+                    updateTestStatus('test-correction-mechanism', 'success', '对话纠正机制正常');
+                    log('✓ 对话纠正机制正常');
+                    
+                    // 清理测试数据
+                    SkillBuilder.clearCorrections('纠正测试用户');
+                    return true;
+                } else {
+                    updateTestStatus('test-correction-mechanism', 'error', '系统提示词未包含纠正信息');
+                    log('✗ 系统提示词未包含纠正信息');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-correction-mechanism', 'error', '测试对话纠正时出错: ' + e.message);
+                log('✗ 测试对话纠正时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试增量记忆追加
+        function testIncrementalMemory() {
+            log('测试增量记忆追加...');
+            
+            try {
+                // 测试增量追加函数是否可用
+                if (typeof MemoryManager.appendMemory !== 'function' ||
+                    typeof MemoryManager.appendEntries !== 'function') {
+                    updateTestStatus('test-incremental-memory', 'error', '增量追加函数未定义');
+                    log('✗ 增量追加函数未定义');
+                    return false;
+                }
+                
+                // 创建测试记忆数据
+                var memory = MemoryManager.create('增量测试用户', {
+                    shared_experiences: {
+                        places_visited: ['北京', '上海'],
+                        inside_jokes: ['笑话1']
+                    }
+                });
+                
+                // 增量追加记忆
+                var appendResult = MemoryManager.appendMemory('增量测试用户', {
+                    shared_experiences: {
+                        places_visited: ['广州', '深圳'],  // 新增地点
+                        inside_jokes: ['笑话2', '笑话3']   // 新增笑话
+                    }
+                });
+                
+                if (!appendResult) {
+                    updateTestStatus('test-incremental-memory', 'error', '增量追加失败');
+                    log('✗ 增量追加失败');
+                    return false;
+                }
+                
+                // 验证数据是否正确合并（去重）
+                var updatedMemory = MemoryManager.get('增量测试用户');
+                var places = updatedMemory.shared_experiences.places_visited;
+                var jokes = updatedMemory.shared_experiences.inside_jokes;
+                
+                // 检查地点是否合并（应该有4个：北京、上海、广州、深圳）
+                if (places.length !== 4 || !places.includes('广州') || !places.includes('深圳')) {
+                    updateTestStatus('test-incremental-memory', 'error', '地点数据合并失败');
+                    log('✗ 地点数据合并失败，当前地点：' + places.join('、'));
+                    return false;
+                }
+                
+                // 检查笑话是否合并（应该有3个：笑话1、笑话2、笑话3）
+                if (jokes.length !== 3 || !jokes.includes('笑话2') || !jokes.includes('笑话3')) {
+                    updateTestStatus('test-incremental-memory', 'error', '笑话数据合并失败');
+                    log('✗ 笑话数据合并失败，当前笑话：' + jokes.join('、'));
+                    return false;
+                }
+                
+                // 测试appendEntries函数
+                var appendEntriesResult = MemoryManager.appendEntries('增量测试用户', 'shared_experiences', 'places_visited', ['杭州', '南京']);
+                
+                if (!appendEntriesResult) {
+                    updateTestStatus('test-incremental-memory', 'error', '批量追加失败');
+                    log('✗ 批量追加失败');
+                    return false;
+                }
+                
+                // 验证批量追加结果
+                var finalMemory = MemoryManager.get('增量测试用户');
+                var finalPlaces = finalMemory.shared_experiences.places_visited;
+                
+                if (finalPlaces.length !== 6 || !finalPlaces.includes('杭州') || !finalPlaces.includes('南京')) {
+                    updateTestStatus('test-incremental-memory', 'error', '批量追加验证失败');
+                    log('✗ 批量追加验证失败，当前地点：' + finalPlaces.join('、'));
+                    return false;
+                }
+                
+                updateTestStatus('test-incremental-memory', 'success', '增量记忆追加正常');
+                log('✓ 增量记忆追加正常');
+                return true;
+            } catch (e) {
+                updateTestStatus('test-incremental-memory', 'error', '测试增量记忆时出错: ' + e.message);
+                log('✗ 测试增量记忆时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试提示词生成
+        function testPromptGeneration() {
+            try {
+                updateTestStatus('test-prompt-generation', 'pending', '测试中...');
+                log('\n--- 测试提示词生成 ---');
+                
+                // 创建测试数据
+                var testPersona = {
+                    identity: {
+                        name: '测试用户',
+                        age: '25',
+                        gender: '女',
+                        occupation: '程序员',
+                        location: '北京',
+                        mbti: 'INFP',
+                        zodiac: '天秤座',
+                        relationship_to_user: '女朋友',
+                        relationship_duration: '2年'
+                    },
+                    hard_rules: {
+                        core_identity: '一个刀子嘴豆腐心的人',
+                        forbidden_behaviors: ['主动道歉', '说软话'],
+                        absolute_traits: ['说话直接', '不喜欢拐弯抹角']
+                    },
+                    speaking_style: {
+                        language_habits: ['喜欢用"~"结尾', '经常发语音'],
+                        punctuation_style: '很少用标点',
+                        emoji_usage: '喜欢用表情包',
+                        message_length: '短消息为主',
+                        common_phrases: ['嗯嗯', '好的吧', '随便你'],
+                        forbidden_phrases: ['亲爱的', '宝贝']
+                    },
+                    emotional_pattern: {
+                        attachment_type: '焦虑型',
+                        emotional_expressions: {
+                            love: '会默默关心，但不会直接说',
+                            anger: '沉默不语，已读不回',
+                            happiness: '话变多，会分享日常',
+                            sadness: '需要安慰，但会说"没事"'
+                        },
+                        emotional_triggers: ['被忽视', '不被理解']
+                    },
+                    relationship_behavior: {
+                        role_in_relationship: '需要被照顾的一方',
+                        boundary_level: '中等',
+                        possessiveness: '较高',
+                        conflict_resolution: '冷战后等对方主动'
+                    },
+                    persona_tags: {
+                        love_languages: ['quality_time', 'words_of_affirmation'],
+                        zodiac: 'libra',
+                        mbti: 'INFP',
+                        personality_tags: ['tough_love', 'clingy']
+                    }
+                };
+                
+                // 测试SkillBuilder的generateSystemPrompt
+                if (window.SkillBuilder) {
+                    // 创建测试Skill
+                    window.SkillBuilder.create('提示词测试用户', testPersona, {}, {});
+                    
+                    // 生成系统提示词
+                    var prompt = window.SkillBuilder.generateSystemPrompt('提示词测试用户', '用户');
+                    
+                    if (!prompt) {
+                        updateTestStatus('test-prompt-generation', 'error', '提示词生成失败');
+                        log('✗ 提示词生成失败');
+                        return false;
+                    }
+                    
+                    // 验证提示词包含关键部分
+                    var requiredParts = [
+                        '硬规则',
+                        '身份信息',
+                        '说话风格',
+                        '情感模式',
+                        '关系行为',
+                        '人格标签',
+                        '对话指令'
+                    ];
+                    
+                    var missingParts = [];
+                    requiredParts.forEach(function(part) {
+                        if (prompt.indexOf(part) === -1) {
+                            missingParts.push(part);
+                        }
+                    });
+                    
+                    if (missingParts.length > 0) {
+                        updateTestStatus('test-prompt-generation', 'error', '提示词缺少关键部分: ' + missingParts.join('、'));
+                        log('✗ 提示词缺少关键部分: ' + missingParts.join('、'));
+                        return false;
+                    }
+                    
+                    // 验证标签翻译
+                    var tagTranslations = [
+                        '喜欢一起做事、聊天', // quality_time
+                        '喜欢用言语表达爱意', // words_of_affirmation
+                        '说话语气硬，但行为上会默默关心', // tough_love
+                        '高频联系，时刻想知道对方在干嘛' // clingy
+                    ];
+                    
+                    var missingTranslations = [];
+                    tagTranslations.forEach(function(translation) {
+                        if (prompt.indexOf(translation) === -1) {
+                            missingTranslations.push(translation);
+                        }
+                    });
+                    
+                    if (missingTranslations.length > 0) {
+                        updateTestStatus('test-prompt-generation', 'error', '标签翻译缺失: ' + missingTranslations.join('、'));
+                        log('✗ 标签翻译缺失: ' + missingTranslations.join('、'));
+                        return false;
+                    }
+                    
+                    updateTestStatus('test-prompt-generation', 'success', '提示词生成正常');
+                    log('✓ 提示词生成正常');
+                    log('提示词长度: ' + prompt.length + ' 字符');
+                    log('\n========== 生成的提示词 ==========');
+                    log(prompt);
+                    log('====================================\n');
+                    return true;
+                } else {
+                    updateTestStatus('test-prompt-generation', 'error', 'SkillBuilder未加载');
+                    log('✗ SkillBuilder未加载');
+                    return false;
+                }
+            } catch (e) {
+                updateTestStatus('test-prompt-generation', 'error', '测试提示词生成时出错: ' + e.message);
+                log('✗ 测试提示词生成时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 测试导入ex-skill
+        function testImportExSkill() {
+            try {
+                updateTestStatus('test-import-ex-skill', 'pending', '测试中...');
+                log('\n--- 测试导入ex-skill ---');
+                
+                // 检查AIDialogueManager是否可用
+                if (!window.AIDialogueManager) {
+                    updateTestStatus('test-import-ex-skill', 'error', 'AIDialogueManager未加载');
+                    log('✗ AIDialogueManager未加载');
+                    return false;
+                }
+                
+                // 检查SkillBuilder是否可用
+                if (!window.SkillBuilder) {
+                    updateTestStatus('test-import-ex-skill', 'error', 'SkillBuilder未加载');
+                    log('✗ SkillBuilder未加载');
+                    return false;
+                }
+                
+                // 实际的郑惠欣skill数据（直接是meta对象格式）
+                var zhenghuixinSkillData = {
+                    name: "郑惠欣",
+                    slug: "zhenghuixin",
+                    created_at: "2026-04-11T23:19:36+08:00",
+                    updated_at: "2026-04-11T23:22:00+08:00",
+                    version: "v2",
+                    profile: {
+                        relationship: "初恋，已结束",
+                        together_duration: "初中分分合合两年，高考后暧昧一个暑假",
+                        apart_since: "2025年8月底实质结束，2025年10月2日最后一次有意义互动",
+                        occupation: "大一学生（大专，厦门），专业未知",
+                        your_occupation: "大一学生（本科，郑州，计算机科学与技术）",
+                        gender: "女",
+                        mbti: "ISFJ",
+                        zodiac: "处女座",
+                        height: "约150cm",
+                        hair: "最近及肩短发",
+                        family: "姐姐、弟弟（今年初三）、舅舅、舅妈"
+                    },
+                    tags: {
+                        personality: [
+                            "擅长逗人开心",
+                            "外表嘻嘻哈哈",
+                            "嘴硬心软",
+                            "内心有失落悲伤",
+                            "别扭地表达关心"
+                        ],
+                        attachment_style: "安全型偏回避",
+                        love_language: "陪伴、调侃、细节在意"
+                    },
+                    impression: "她会陪你聊到天亮，但不会直接说想你。她会吐槽你、嫌弃你、欲擒故纵，但在你难受的时候又不会真正丢下你。她不止是初恋，更像青春期照亮过你的一座灯塔。真正难受的不是失恋本身，而是像错过了本来可能抓住的机会。",
+                    memory_sources: [
+                        {
+                            type: "wechat_chat",
+                            file: "C:\\Users\\lenovo\\Downloads\\语料.txt",
+                            period: "2025-06-16 至 2025-10-02"
+                        }
+                    ],
+                    corrections_count: 1
+                };
+                
+                // 测试导入
+                var result = window.AIDialogueManager.importExSkill(zhenghuixinSkillData);
+                
+                if (!result) {
+                    updateTestStatus('test-import-ex-skill', 'error', '导入失败');
+                    log('✗ 导入失败');
+                    return false;
+                }
+                
+                // 验证导入结果
+                var skill = window.SkillBuilder.get('郑惠欣');
+                if (!skill) {
+                    updateTestStatus('test-import-ex-skill', 'error', 'Skill未创建');
+                    log('✗ Skill未创建');
+                    return false;
+                }
+                
+                // 验证人格数据
+                if (!skill.persona || !skill.persona.identity) {
+                    updateTestStatus('test-import-ex-skill', 'error', '人格数据缺失');
+                    log('✗ 人格数据缺失');
+                    return false;
+                }
+                
+                // 验证记忆数据
+                if (!skill.memory) {
+                    updateTestStatus('test-import-ex-skill', 'error', '记忆数据缺失');
+                    log('✗ 记忆数据缺失');
+                    return false;
+                }
+                
+                // 验证关键数据
+                var identity = skill.persona.identity;
+                if (identity.name !== '郑惠欣') {
+                    updateTestStatus('test-import-ex-skill', 'error', '姓名不匹配');
+                    log('✗ 姓名不匹配: ' + identity.name);
+                    return false;
+                }
+                
+                if (identity.mbti !== 'ISFJ') {
+                    updateTestStatus('test-import-ex-skill', 'error', 'MBTI不匹配');
+                    log('✗ MBTI不匹配: ' + identity.mbti);
+                    return false;
+                }
+                
+                if (identity.zodiac !== '处女座') {
+                    updateTestStatus('test-import-ex-skill', 'error', '星座不匹配');
+                    log('✗ 星座不匹配: ' + identity.zodiac);
+                    return false;
+                }
+                
+                updateTestStatus('test-import-ex-skill', 'success', '导入成功');
+                log('✓ 导入成功');
+                log('Skill名称: ' + skill.name);
+                log('人格数据:');
+                log('  - 姓名: ' + identity.name);
+                log('  - 性别: ' + identity.gender);
+                log('  - MBTI: ' + identity.mbti);
+                log('  - 星座: ' + identity.zodiac);
+                log('  - 关系: ' + identity.relationship_to_user);
+                log('  - 在一起时长: ' + identity.relationship_duration);
+                log('记忆数据: ' + (skill.memory ? '已导入' : '缺失'));
+                return true;
+            } catch (e) {
+                updateTestStatus('test-import-ex-skill', 'error', '测试导入时出错: ' + e.message);
+                log('✗ 测试导入时出错: ' + e.message);
+                return false;
+            }
+        }
+        
+        // 运行所有测试
+        function testAll() {
+            log('开始运行所有测试...');
+            log('====================================');
+            
+            // 清除之前的结果
+            testResults = [];
+            
+            // 测试模块加载
+            testModuleLoading();
+            
+            log('====================================');
+            
+            // 测试功能
+            testCreatePersona();
+            testCreateMemory();
+            testCreateSkill();
+            testGeneratePrompt();
+            testIntakeFlow();
+            testPersonaTags();
+            testCorrectionMechanism();
+            testIncrementalMemory();
+            testPromptGeneration();
+            testImportExSkill();
+            
+            log('====================================');
+            log('所有测试完成！');
+            
+            // 统计结果
+            var successCount = testResults.filter(function(r) { return r.status === 'success'; }).length;
+            var errorCount = testResults.filter(function(r) { return r.status === 'error'; }).length;
+            
+            log('通过: ' + successCount + ' 个');
+            log('失败: ' + errorCount + ' 个');
+            
+            if (errorCount === 0) {
+                log('🎉 所有测试通过！');
+            } else {
+                log('⚠️ 有 ' + errorCount + ' 个测试失败，请检查。');
+            }
+        }
+        
+        // 清除结果
+        function clearResults() {
+            testResults = [];
+            var output = document.getElementById('result-output');
+            if (output) {
+                output.textContent = '点击"运行所有测试"开始测试...';
+            }
+            
+            // 重置所有测试状态
+            var testItems = document.querySelectorAll('.test-item');
+            testItems.forEach(function(item) {
+                item.className = 'test-item pending';
+                var statusSpan = item.querySelector('.status');
+                if (statusSpan) {
+                    statusSpan.className = 'status pending';
+                    statusSpan.textContent = '待测试';
+                }
+            });
+        }
+        
+        // 日志输出
+        function log(message) {
+            console.log(message);
+            var output = document.getElementById('result-output');
+            if (output) {
+                output.textContent += message + '\n';
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+        
+        // 页面加载完成后自动运行测试
+        window.addEventListener('load', function() {
+            log('页面加载完成，准备运行测试...');
+            setTimeout(function() {
+                testAll();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
